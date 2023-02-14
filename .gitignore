@@ -1,0 +1,11 @@
+shared resources
+notes
+*.vscode
+*.env
+*.csv
+*.xlsx
+resources
+misc
+__pycache__
+*.jar
+*.txt
