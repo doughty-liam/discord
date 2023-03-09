@@ -3,70 +3,50 @@ import pandas as pd
 import os, psutil
 import random
 import math
-from nltk.corpus import wordnet
 import textblob as tb
+from vectorize import clean_messages
 
 '''
-HOW TO MAKE THE GENERATED MESSAGES BETTER?
+How to augment?
 
-- Determine order of word-types from discord data
-- Determine the sentiment of the messages if possible?
-
-Using this information, generate messages that have some sort of order,
-ex. noun verb noun noun or something and also have a common sentiment?
-
-- Could arrange all words from messages and english dataset into
-  smaller arrays for just nouns, verbs, adjectives, and unknowns
-
- --> Then, select a random word for each based on a random sentence format
+1. Scan all messages in list
+2. Select 1-2 (max message length) words to replace from the message list
+3. Store current message in a list of words
+4. Randomy select numReplaced words from msgList.
+5. Get each words POS tag.
+6. Replace words in original message with new RANDOM words that have the same POS tag.
 '''
 
-def read_wordbanks():
+#	blobs = [tb.TextBlob(str(msg)) for msg in messages]
+def get_blobs():
 
-    DISCORD_WORDS = open("resources/discord_wordbank.txt", 'r')
-    ENGLISH_WORDS = open("resources/3000_english_words.txt", 'r')
+	discord_msgs = pd.read_excel("resources/discord_message_hist.xlsx")
+	discord_msgs["Content"].str.lower()
+	messages = discord_msgs["Content"].tolist()
+	messages = clean_messages(messages)
+	blobs = [tb.TextBlob(str(msg)) for msg in messages]
 
-    discord_wordbank = list()
+	return blobs
 
-    discord_wordbank = DISCORD_WORDS.readlines()
-    english_wordbank = ENGLISH_WORDS.readlines()
+def get_messages():
 
-    for i in range(len(discord_wordbank)):
-        discord_wordbank[i] = discord_wordbank[i].strip().split(' ')[0] 
-
-    for i in range(len(english_wordbank)):
-        english_wordbank[i] = english_wordbank[i].strip()
-
-    DISCORD_WORDS.close()
-    ENGLISH_WORDS.close()
-
-    return [discord_wordbank, english_wordbank]
+	discord_msgs = pd.read_excel("resources/discord_message_hist.xlsx")
+	discord_msgs["Content"].str.lower()
+	messages = discord_msgs["Content"].tolist()
+	messages = clean_messages(messages)
+	return messages
 
 
-# Generates random messages using words from wordbanks. Returns list of messages with specified length.
-def gen_messages(num_msg, ranked_words, english_words, min_len, max_len):
-    
-    min_msg_len = min_len
-    max_msg_len = max_len
-    num_messages = num_msg
-    num_ranked = len(ranked_words)
-    num_english = len(english_words)
+if __name__ == "__main__":
 
-    generated = []
-
-    # Generating num_messages amount of random sentences
-    for i in range(num_messages):
-        num_words = random.randint(min_msg_len, max_msg_len) # Determine number of words in message
-        curr_msg = ""
-        
-        for j in range(num_words):
-            wordbank = random.choice([ranked_words, english_words]) # Randomly select word from english or discord wordbank
-        
-            if j == 0:
-                curr_msg = curr_msg + wordbank[random.randint(0, num_ranked)]
-            else:
-                curr_msg = curr_msg + " " + wordbank[random.randint(0, num_ranked)]      
-                
-        generated.append(curr_msg)
-        
-    return generated
+	blobs =	get_blobs()
+	messages = get_messages()
+	new = []
+	
+	index = 0
+	for message in messages[:3]:
+		for i in range(10): # Create ten new augmented messages per original
+			words = message.split()
+			numReplaced = random.randint(1,(lambda x: 3 if x >= 3 else x)(len(words))) # Replace 1-3 words
+			
+		index = index + 1

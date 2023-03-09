@@ -1,6 +1,7 @@
 from nltk.corpus import wordnet as wn
 import textblob as tb
 import pandas as pd
+import string
 
 def clean_messages(messages:list)->list:
 	"""
@@ -8,7 +9,10 @@ def clean_messages(messages:list)->list:
 	"""
 	cleaned = []	
 	for i in range(len(messages)):
-		cleaned.append(str(messages[i]).lower().rstrip().lstrip().encode("ascii", "ignore"))
+		
+		clean = str(messages[i]).translate(str.maketrans('', '', string.punctuation))
+		clean = clean.lower().rstrip().lstrip().encode("ascii", "ignore")
+		cleaned.append(clean)
 	
 	return cleaned
 

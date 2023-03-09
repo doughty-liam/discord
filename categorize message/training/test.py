@@ -19,16 +19,13 @@ def get_adverbs():
 
 def get_adjectives():
     all_adjectives = [word for synset in wn.all_eng_synsets(wn.ADJ) for word in synset.lemma_names()]
-    print("p4 complete.")
     return all_adjectives
 
 if __name__ == '__main__':
-    p1 = mp.Process(target=get_nouns, args=[])
-    p2 = mp.Process(target=get_verbs, args=[])
-    p3 = mp.Process(target=get_adverbs, args=[])
-    p4 = mp.Process(target=get_adjectives, args=[])
 
-    p1.start()
-    p2.start()
-    p3.start()
-    p4.start()
+    nouns = get_nouns()
+    verbs = get_verbs()
+    adjectives = get_adjectives()
+    adverbs = get_adverbs()
+
+    print(nouns[:20],verbs[:20])
