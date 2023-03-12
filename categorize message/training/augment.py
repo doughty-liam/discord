@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+from nltk.corpus import wordnet as wn
+import nltk
 import os, psutil
 import random
 import math
@@ -34,6 +36,7 @@ def get_messages():
 	discord_msgs["Content"].str.lower()
 	messages = discord_msgs["Content"].tolist()
 	messages = clean_messages(messages)
+
 	return messages
 
 
@@ -42,11 +45,12 @@ if __name__ == "__main__":
 	blobs =	get_blobs()
 	messages = get_messages()
 	new = []
-	
+
 	index = 0
-	for message in messages[:3]:
+	for message in messages[:30]:
 		for i in range(10): # Create ten new augmented messages per original
 			words = message.split()
-			numReplaced = random.randint(1,(lambda x: 3 if x >= 3 else x)(len(words))) # Replace 1-3 words
-			
+			print(words)
+			currWord = str(random.choice(words))
+			# print(nltk.pos_tag([currWord]))
 		index = index + 1
