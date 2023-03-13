@@ -40,6 +40,7 @@ def get_messages():
 	return messages
 
 
+
 if __name__ == "__main__":
 
 	blobs =	get_blobs()
@@ -50,7 +51,6 @@ if __name__ == "__main__":
 	for message in messages[:30]:
 		for i in range(10): # Create ten new augmented messages per original
 			words = message.split()
-			print(words)
 			currWord = str(random.choice(words))
-			# print(nltk.pos_tag([currWord]))
+			print( nltk.pos_tag([currWord])[0][1] ) # Print tag (string) of each word
 		index = index + 1

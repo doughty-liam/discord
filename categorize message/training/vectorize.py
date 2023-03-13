@@ -10,10 +10,16 @@ def clean_messages(messages:list)->list:
 	cleaned = []	
 	for i in range(len(messages)):
 		
-		clean = str(messages[i]).translate(str.maketrans('', '', string.punctuation))
-		clean = clean.lower().rstrip().lstrip().encode("ascii", "ignore")
-		cleaned.append(clean)
+		
+		temp = str(messages[i]).translate(str.maketrans('', '', string.punctuation))
+		temp = "".join(char for char in temp if char.isalpha() or char == ' ')
+		temp2 = temp.lower().rstrip().lstrip()
+		clean = " ".join(temp2.split())
+
+		if len(clean) != 0:
+			cleaned.append(clean)
 	
+	# print(f"****{len(cleaned[895])}****")
 	return cleaned
 
 def get_tags()->dict:
