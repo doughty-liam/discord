@@ -47,10 +47,38 @@ if __name__ == "__main__":
 	messages = get_messages()
 	new = []
 
+	all_nouns = [word for synset in wn.all_eng_synsets(wn.NOUN) for word in synset.lemma_names()]
+	all_verbs = [word for synset in wn.all_eng_synsets(wn.VERB) for word in synset.lemma_names()]
+	all_adverbs = [word for synset in wn.all_eng_synsets(wn.ADV) for word in synset.lemma_names()]
+	all_adjectives = [word for synset in wn.all_eng_synsets(wn.ADJ) for word in synset.lemma_names()]
+
 	index = 0
-	for message in messages[:30]:
+	for message in messages[:10]:
 		for i in range(10): # Create ten new augmented messages per original
 			words = message.split()
 			currWord = str(random.choice(words))
-			print( nltk.pos_tag([currWord])[0][1] ) # Print tag (string) of each word
-		index = index + 1
+			tag = nltk.pos_tag([currWord])[0][1]
+
+			if tag == "JJ":
+				newWord = str(random.choice(all_adjectives))
+				newMsg = message.replace(currWord, newWord)
+				print(message, newMsg)
+				new.append(newMsg)
+
+			elif tag == "RB":
+				newWord = str(random.choice(all_adverbs))
+				newMsg = message.replace(currWord, newWord)
+				print(message, newMsg)
+				new.append(newMsg)
+
+			elif tag == "VB":
+				newWord = str(random.choice(all_verbs))
+				newMsg = message.replace(currWord, newWord)
+				print(message, newMsg)
+				new.append(newMsg)
+			
+			else:
+				newWord = str(random.choice(all_nouns))
+				newMsg = message.replace(currWord, newWord)
+				print(message, newMsg)
+				new.append(newMsg)
