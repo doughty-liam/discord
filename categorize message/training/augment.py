@@ -8,18 +8,6 @@ import math
 import textblob as tb
 from vectorize import clean_messages
 
-'''
-How to augment?
-
-1. Scan all messages in list
-2. Select 1-2 (max message length) words to replace from the message list
-3. Store current message in a list of words
-4. Randomy select numReplaced words from msgList.
-5. Get each words POS tag.
-6. Replace words in original message with new RANDOM words that have the same POS tag.
-'''
-
-#	blobs = [tb.TextBlob(str(msg)) for msg in messages]
 def get_blobs():
 
 	discord_msgs = pd.read_excel("resources/discord_message_hist.xlsx")
@@ -43,7 +31,6 @@ def get_messages():
 
 if __name__ == "__main__":
 
-	blobs =	get_blobs()
 	messages = get_messages()
 	new = []
 
@@ -52,33 +39,44 @@ if __name__ == "__main__":
 	all_adverbs = [word for synset in wn.all_eng_synsets(wn.ADV) for word in synset.lemma_names()]
 	all_adjectives = [word for synset in wn.all_eng_synsets(wn.ADJ) for word in synset.lemma_names()]
 
-	index = 0
-	for message in messages[:10]:
+	FILE = open("resources/augmented_messages.txt", "w")
+
+	for message in messages:
 		for i in range(10): # Create ten new augmented messages per original
+			replaceInd = 0
 			words = message.split()
-			currWord = str(random.choice(words))
-			tag = nltk.pos_tag([currWord])[0][1]
+			for j in range((len(words)//4) + 1):
 
-			if tag == "JJ":
-				newWord = str(random.choice(all_adjectives))
-				newMsg = message.replace(currWord, newWord)
-				print(message, newMsg)
-				new.append(newMsg)
+				currWord = str(random.choice(words))
+				replaceInd = words.index(currWord)
+				tag = nltk.pos_tag([currWord])[0][1]
 
-			elif tag == "RB":
-				newWord = str(random.choice(all_adverbs))
-				newMsg = message.replace(currWord, newWord)
-				print(message, newMsg)
-				new.append(newMsg)
+				newWord = "_-"
+				if tag == "JJ":
+					while ("_" in newWord) or ("-" in newWord):
+						newWord = str(random.choice(all_adjectives)).lower()
+					words[replaceInd] = newWord
+					newMsg = " ".join(words)
+					new.append(newMsg)
 
-			elif tag == "VB":
-				newWord = str(random.choice(all_verbs))
-				newMsg = message.replace(currWord, newWord)
-				print(message, newMsg)
-				new.append(newMsg)
-			
-			else:
-				newWord = str(random.choice(all_nouns))
-				newMsg = message.replace(currWord, newWord)
-				print(message, newMsg)
-				new.append(newMsg)
+				elif tag == "RB":
+					while ("_" in newWord) or ("-" in newWord):
+						newWord = str(random.choice(all_adverbs)).lower()
+					words[replaceInd] = newWord
+					newMsg = " ".join(words)
+					new.append(newMsg)
+
+				elif tag == "VB":
+					while ("_" in newWord) or ("-" in newWord):
+						newWord = str(random.choice(all_verbs)).lower()
+					words[replaceInd] = newWord
+					newMsg = " ".join(words)
+					new.append(newMsg)
+				
+				else:
+					while ("_" in newWord) or ("-" in newWord):
+						newWord = str(random.choice(all_nouns)).lower()
+					words[replaceInd] = newWord
+					newMsg = " ".join(words)
+					new.append(newMsg)
+			FILE.write(newMsg+"\n")

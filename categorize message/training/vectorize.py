@@ -2,6 +2,7 @@ from nltk.corpus import wordnet as wn
 import textblob as tb
 import pandas as pd
 import string
+from unidecode import unidecode
 
 def clean_messages(messages:list)->list:
 	"""
@@ -15,11 +16,10 @@ def clean_messages(messages:list)->list:
 		temp = "".join(char for char in temp if char.isalpha() or char == ' ')
 		temp2 = temp.lower().rstrip().lstrip()
 		clean = " ".join(temp2.split())
-
+		clean = unidecode(clean)
 		if len(clean) != 0:
 			cleaned.append(clean)
 	
-	# print(f"****{len(cleaned[895])}****")
 	return cleaned
 
 def get_tags()->dict:
