@@ -80,3 +80,5 @@ if __name__ == "__main__":
 					newMsg = " ".join(words)
 					new.append(newMsg)
 			FILE.write(newMsg+"\n")
+	
+	FILE.close()
